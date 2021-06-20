@@ -10,18 +10,56 @@ afterEach(() => {
   spy.mockRestore();
 });
 
-test("constructor creates an empty game", () => {
-  const game = new Game(4, 1);
-  expect(game.size).toBe(4);
-  expect(game.bricksPerStep).toBe(1);
-  expect(game.score).toBe(0);
-  expect(game.gameOver).toBeFalsy();
-  expect(game).toHaveBoard([
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-  ]);
+describe("construction", () => {
+  test("constructor creates an empty game of given board size", () => {
+    const game = new Game(4, 1);
+    expect(game.size).toBe(4);
+    expect(game.bricksPerStep).toBe(1);
+    expect(game.score).toBe(0);
+    expect(game.gameOver).toBeFalsy();
+    expect(game).toHaveBoard([
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ]);
+  });
+
+  test("create() creates a game with given size", () => {
+    const game = Game.create({ size: 4, bricksPerStep: 1 });
+    expect(game.size).toBe(4);
+    expect(game.bricksPerStep).toBe(1);
+    expect(game.score).toBe(0);
+    expect(game.gameOver).toBeFalsy();
+    expect(game).toHaveBoard([
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ]);
+  });
+
+  test("create() creates a game with given board position", () => {
+    const game = Game.create({
+      board: [
+        [0, 0, 0, 0],
+        [0, 1, 0, 0],
+        [0, 0, 1, 0],
+        [0, 0, 0, 0],
+      ],
+      bricksPerStep: 1,
+    });
+    expect(game.size).toBe(4);
+    expect(game.bricksPerStep).toBe(1);
+    expect(game.score).toBe(0);
+    expect(game.gameOver).toBeFalsy();
+    expect(game).toHaveBoard([
+      [0, 0, 0, 0],
+      [0, 1, 0, 0],
+      [0, 0, 1, 0],
+      [0, 0, 0, 0],
+    ]);
+  });
 });
 
 describe("slideNorth", () => {
@@ -395,4 +433,70 @@ test("gameOver condition", () => {
     [8, 16, 32, 64],
   ]);
   expect(game.gameOver).toBeTruthy();
+});
+
+test("reset", () => {
+  const game = Game.create({
+    bricksPerStep: 1,
+    board: [
+      [1, 2, 4, 8],
+      [2, 4, 8, 16],
+      [4, 8, 16, 32],
+      [8, 16, 32, 64],
+    ],
+  });
+  game.slide(Direction.East);
+  game.reset();
+  expect(game).toHaveBoard([
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ]);
+  expect(game.step).toBe(0);
+  expect(game.score).toBe(0);
+  expect(game.gameOver).toBeFalsy();
+});
+
+test("boardData", () => {
+  const game = Game.create({
+    bricksPerStep: 1,
+    board: [
+      [1, 2, 4, 8],
+      [2, 4, 8, 16],
+      [4, 8, 16, 32],
+      [8, 16, 32, 64],
+    ],
+  });
+  expect(game.boardData()).toEqual([
+    1, 2, 4, 8, 2, 4, 8, 16, 4, 8, 16, 32, 8, 16, 32, 64,
+  ]);
+});
+
+describe("print()", () => {
+  let logSpy: jest.SpyInstance<unknown, unknown[]>;
+
+  beforeEach(() => {
+    logSpy = jest.spyOn(console, "log");
+  });
+
+  afterEach(() => {
+    logSpy.mockRestore();
+  });
+
+  test("print", () => {
+    const game = Game.create({
+      bricksPerStep: 1,
+      board: [
+        [1, 2, 4, 8],
+        [2, 4, 8, 16],
+        [4, 8, 16, 32],
+        [8, 16, 32, 64],
+      ],
+    });
+    game.print();
+    expect(logSpy).toHaveBeenCalledWith(
+      "1-2-4-8\n2-4-8-16\n4-8-16-32\n8-16-32-64"
+    );
+  });
 });
