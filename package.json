@@ -1,5 +1,5 @@
 {
-  "name": "@mykulyak/2048",
+  "name": "mykulyak-2048",
   "version": "0.1.0",
   "description": "Logic for 2048-like games.",
   "main": "dist/index.js",
