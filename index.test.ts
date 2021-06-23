@@ -11,7 +11,12 @@ afterEach(() => {
 });
 
 describe("construction", () => {
-  test("constructor creates an empty game of given board size", () => {
+  beforeEach(() => {
+    // put new piece in [3, 3], its value will always be 2
+    spy.mockReturnValue(0.9999);
+  });
+
+  test("constructor creates a game with given size", () => {
     const game = new Game(4, 1);
     expect(game.size).toBe(4);
     expect(game.bricksPerStep).toBe(1);
@@ -21,7 +26,7 @@ describe("construction", () => {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-      [0, 0, 0, 0],
+      [0, 0, 0, 2],
     ]);
   });
 
@@ -35,7 +40,7 @@ describe("construction", () => {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-      [0, 0, 0, 0],
+      [0, 0, 0, 2],
     ]);
   });
 

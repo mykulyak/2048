@@ -40,7 +40,7 @@ export default class Game {
     if ("size" in options) {
       result = new Game(options.size, options.bricksPerStep);
     } else {
-      result = new Game(options.board!.length, options.bricksPerStep);
+      result = new Game(options.board!.length, options.bricksPerStep, false);
       options.board!.forEach((rowData, row) =>
         rowData.forEach((value, col) => {
           result.board[row][col] = value;
@@ -52,7 +52,11 @@ export default class Game {
     return result;
   }
 
-  constructor(size: number, bricksPerStep: number) {
+  constructor(
+    size: number,
+    bricksPerStep: number,
+    addInitialPieces: boolean = true
+  ) {
     this.size = size;
     this.bricksPerStep = bricksPerStep;
     this.board = Array.from({ length: size }, () =>
@@ -61,6 +65,9 @@ export default class Game {
     this.score = 0;
     this.step = 0;
     this.gameOver = false;
+    if (addInitialPieces) {
+      this.addNewPieces(this.findEmptyCells());
+    }
   }
 
   private slideNorth(): void {
